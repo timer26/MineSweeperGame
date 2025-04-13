@@ -48,28 +48,28 @@ def render_user(render_object: list, sprite: str):
 
 
 
-# # metric data need switch from settings
-# def final_render(sprite: str):
-#     clear_console()
-#     metric_offset = 10
-#     rendered_lines = data.get_rendered_area().copy()
-#     rendered_with_cursor = render_user(rendered_lines, data.get_sprites()[sprite])
-# 
-#     metric_data = data.get_metric_data()
-#     max_lines = max(len(rendered_with_cursor), len(metric_data))
-# 
-#     for i in range(max_lines):
-#         line = rendered_with_cursor[i] if i < len(rendered_with_cursor) else ""
-# 
-#         if i < len(metric_data):
-#             metric_dict = metric_data[i]
-#             key, value = list(metric_dict.items())[0]
-#             metric = f"{key} : {value}"
-#         else:
-#             metric = ""
-# 
-# 
-#         padded_line = line.ljust(data.get_position_modifier()["x_max"]+metric_offset)
-#         print(f"{padded_line}{"||- "}{metric}")
-# 
-#     data.clear_metric_data()
+# metric data need switch from settings
+def final_render(sprite: str):
+    clear_console()
+    metric_offset = 10
+    rendered_lines = data.get_rendered_area().copy()
+    rendered_with_cursor = render_user(rendered_lines, data.get_sprites()[sprite])
+
+    metric_data = data.get_metric_data()
+    max_lines = max(len(rendered_with_cursor), len(metric_data))
+
+    for i in range(max_lines):
+        line = rendered_with_cursor[i] if i < len(rendered_with_cursor) else ""
+
+        if i < len(metric_data):
+            metric_dict = metric_data[i]
+            key, value = list(metric_dict.items())[0]
+            metric = f"{key} : {value}"
+        else:
+            metric = ""
+
+
+        padded_line = line.ljust(data.get_position_modifier()["x_max"]+metric_offset)
+        print(f"{padded_line}{"||- "}{metric}")
+
+    data.clear_metric_data()
