@@ -72,4 +72,5 @@ def final_render(sprite: str):
         padded_line = line.ljust(data.get_position_modifier()["x_max"]+metric_offset)
         print(f"{padded_line}{"||- "}{metric}")
 
+
     data.clear_metric_data()
