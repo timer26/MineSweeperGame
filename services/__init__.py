@@ -1,1 +1,0 @@
-from services.GridPositionHandler import position_handler, forced_position_handler

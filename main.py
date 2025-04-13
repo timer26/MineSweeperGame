@@ -1,9 +1,6 @@
-from GlobalServices.GlobalData import Context
-from services.Renders import MenuRender
-
-Context.menus["mani_menu"]
-
+from GlobalData.GlobalHelpers import MetricData
+from GlobalData.GlobalContext import Context
+from MinesGame import main_menu
 
 
-# Output results
-print("\n".join(Context.menus["mani_menu"]))
+main_menu()
