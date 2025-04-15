@@ -5,14 +5,7 @@ from GlobalData.GlobalContext import Context
 
 
 
-def back():
-    if len(Context.last_menu_position) > 1:
-        Context.last_menu_position_stack.pop(-1) 
-        Context.menu_position = Context.last_menu_position[-1]  
-        Context.all_menu_functions[Context.menu_position]() 
-    else:
-        Context.menu_position = "main_menu"
-        Context.all_menu_functions["main_menu"]()
+
 def run_menu(menu_content: list, spacing: int, name_of_section: str):
     render_menu(spacing, name_of_section, menu_content)
     while True:
@@ -88,6 +81,5 @@ Context.all_menu_functions = {
         "difficulty": difficulty,
         "settings": settings,
         "end_game": end_game,
-        "back": back,
         # "metrics_analyze"metrics_analyze,
 }

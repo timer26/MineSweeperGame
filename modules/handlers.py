@@ -1,9 +1,10 @@
 import time
+from _pyrepl.commands import backspace
 
 from modules import *
 from GlobalData.GlobalContext import Context
 from pynput import keyboard
-from GlobalData.GlobalHelpers import difficulty_setter, MetricData,push_menu_position
+from GlobalData.GlobalHelpers import *
 def user_input_handler() -> str:
     pressed_key = []
 
@@ -76,14 +77,17 @@ def menu_handler(menu_content: list):
     if result == "enter":
         if Context.menu_position == "difficulty":
             difficulty_setter(selected_key)
+            menu_handler(menu_content)
+        elif selected_key == "back":
+            back()
+        else:
+            push_menu_position(Context.menu_position)
     
-
-        push_menu_position(Context.menu_position)
-
-        Context.menu_position = selected_key
-        Context.all_menu_functions[selected_key]()
+            Context.menu_position = selected_key
+            Context.all_menu_functions[selected_key]()
     elif result == "esc":
         Context.menu_position = "main_menu"
         Context.all_menu_functions["main_menu"]()
     elif result == "backspace":
-        Context.all_menu_functions["back"]()
+        back()
+        

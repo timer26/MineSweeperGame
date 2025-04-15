@@ -1,6 +1,14 @@
 from dataclasses import dataclass
 
-
+def back():
+    from GlobalData.GlobalContext import Context
+    if len(Context.last_menu_position_stack) > 1:
+        Context.last_menu_position_stack.pop(-1)
+        Context.menu_position = Context.last_menu_position_stack[-1]
+        Context.all_menu_functions[Context.menu_position]()
+    else:
+        Context.menu_position = "main_menu"
+        Context.all_menu_functions["main_menu"]()
 def push_menu_position(current:str):
     from GlobalData.GlobalContext import Context
     if not Context.last_menu_position_stack or Context.last_menu_position_stack[-1] != current:

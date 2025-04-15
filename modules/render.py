@@ -2,6 +2,7 @@ from modules import forced_position_handler
 from GlobalData.GlobalContext import Context
 from GlobalData.GlobalHelpers import MetricData
 import os
+import blessed
 
 def clear_console():
         os.system('cls' if os.name == 'nt' else 'clear')
