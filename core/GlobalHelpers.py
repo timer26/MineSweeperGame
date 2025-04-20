@@ -1,10 +1,8 @@
 from typing import Literal, Union
-
 from GlobalData.GlobalContext import Context
-from pynput import keyboard
 from GlobalData.Metric import MetricData, Log
 import os
-
+import sys
 
 
 def clear_console():
@@ -44,65 +42,72 @@ def user_input_record(mode: Literal["str", "int", "float"]) -> Union[str, int, f
 
     Log.add(message=f"user input record has finished with result: {result}", level="DEBUG")
     return result
-    
-    
+
+
 def user_input_on_press() -> str or None:
-    Log.add(message=f"user input on press has started", level="DEBUG")
-    pressed_key = []
+    Log.add(message="user input on press has started", level="DEBUG")
 
-    def on_press(key):
-        try:
-           
-            if hasattr(key, "char") and key.char is not None:
-                k = key.char.lower()
-            
-            elif hasattr(key, "name"):
-                k = key.name
-            else:
-                Log.add(message=f"Ignored unknown key input: {key}", level="ERROR")
+    def get_single_keypress():
+        if os.name == 'nt':
+            import msvcrt
+            key = msvcrt.getch()
+            return key.decode().lower()
+        else:
+            import tty
+            import termios
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(fd)
+                key = sys.stdin.read(1)
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            return key.lower()
 
+    key = get_single_keypress()
 
+    key_map = {
+            "\x1b": "esc",
+            "\r": "enter",
+            "\x7f": "backspace",
+            "w": "w", "a": "a", "s": "s", "d": "d",
+    }
 
-            valid_keys = {"w", "a", "s", "d", "up", "down", "left", "right", "enter", "esc", "backspace"}
+    # Optional: arrow key handling (platform-specific escape sequences)
+    if key == "\x1b":  # escape sequence start
+        next1 = get_single_keypress()
+        if next1 == "[":
+            next2 = get_single_keypress()
+            arrows = {"A": "up", "B": "down", "C": "right", "D": "left"}
+            key = arrows.get(next2, "unknown")
 
-            if k in valid_keys:
-                pressed_key.append(k)
-                return False 
-            else:
-                Log.add(message=f"Ignored unsupported key: {k}", level="ERROR")
+    else:
+        key = key_map.get(key, key)
 
+    MetricData.append_metric_data("Last key pressed", key)
+    Context.metric_data = {"Latest key pressed": key}
+    Log.add(message=f"user input finished with {key} result", level="DEBUG")
 
-        except Exception as e:
-            Log.add(message=f"Error while processing key: {e}", level="ERROR")
-
-    with keyboard.Listener(on_press=on_press) as listener:
-        listener.join()
-
-
-    user_input = pressed_key[0]
-    MetricData.append_metric_data("Last key pressed", user_input)
-    Context.metric_data = {"Latest key pressed": pressed_key}
-    Log.add(message=f"user input finished whit {user_input} result", level="DEBUG")
-    
-    if user_input in ("w", "up"):
+    if key in ("w", "up"):
         Context.vector = [0, -1]
         return Context.vector
-    elif user_input in ("s", "down"):
+    elif key in ("s", "down"):
         Context.vector = [0, 1]
         return Context.vector
-    elif user_input in ("a", "left"):
+    elif key in ("a", "left"):
         Context.vector = [-1, 0]
         return Context.vector
-    elif user_input in ("d", "right"):
+    elif key in ("d", "right"):
         Context.vector = [1, 0]
         return Context.vector
-    elif user_input == "enter":
+    elif key == "enter":
         return "enter"
-    elif user_input == "esc":
+    elif key == "esc":
         return "esc"
-    elif user_input == "backspace":
+    elif key == "backspace":
         return "backspace"
     else:
+        Log.add(message=f"Unrecognized key: {key}", level="ERROR")
         return None
 
     
