@@ -10,7 +10,7 @@ class _Context:
     context_trigger: int = 1
     
     difficulty: str = "easy"
-    difficulty_modifier: float = 1.0
+    difficulty_modifier: float = 0.35
     menu_position: str = "main_menu"
     last_menu_position_stack: list = field(default_factory=lambda: ["main_menu"])
     sprites: dict = field(default_factory=lambda: {
@@ -31,8 +31,9 @@ class _Context:
             "9":               " 9 ",
     })
     
-    grid_width = 5
-    grid_height = 5
+    #default grid 
+    grid_width = 10
+    grid_height = 10
     raw_grid = None
     
     #metric enable/disable

@@ -15,7 +15,7 @@ def run_menu(menu_content: list, spacing: int, name_of_section: str):
         current_snapshot = get_data_snapshot()
 
         if current_snapshot != last_snapshot:
-            final_render("menu_cursor")
+            final_render("menu cursor")
             last_snapshot = current_snapshot
 
         menu_handler(menu_content)
@@ -54,9 +54,9 @@ def difficulty():
     run_menu(menu_content, spacing, name_of_section)
 def grid_settings():
     menu_content = [
-            "5x5",
             "10x10",
             "20x20",
+            "30x30",
             "custom",
             "back",
 

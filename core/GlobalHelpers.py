@@ -146,27 +146,27 @@ def push_menu_position(current:str):
 def difficulty_setter(difficulty: str):
     if difficulty == "easy":
         Context.difficulty = "easy"
-        Context.difficulty_modifier = 1.0
+        Context.difficulty_modifier = 0.35
     elif difficulty == "medium":
         Context.difficulty = "medium"
-        Context.difficulty_modifier = 1.5
+        Context.difficulty_modifier = 0.45
     elif difficulty == "hard":
         Context.difficulty = "hard"
-        Context.difficulty_modifier = 2.0
+        Context.difficulty_modifier = 0.6
     Log.add(message=f"difficulty has been changed to {difficulty}", level="INFO")
         
 def grid_setter(chosed: str):
     
-    if chosed == "5x5":
-        Context.grid_width = 5
-        Context.grid_height = 5
-    
-    elif chosed == "10x10":
+    if chosed == "10x10":
         Context.grid_width = 10
         Context.grid_height = 10
+    
     elif chosed == "20x20":
         Context.grid_width = 20
         Context.grid_height = 20
+    elif chosed == "30x30":
+        Context.grid_width = 30
+        Context.grid_height = 30
     elif chosed == "custom":
         Log.add(message="insert custom wight",level="INFO")
         inserted_number = user_input_record("int")

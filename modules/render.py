@@ -2,9 +2,16 @@ from modules.handlers import forced_position_handler
 from GlobalData.GlobalContext import Context
 from GlobalData.Metric import MetricData, Log
 from core.GlobalHelpers import clear_console
-from MinesGame.MinesGame import TileGrid
 import json
 
+def build_column(name: str, lines: list[str]) -> tuple[str, list[str], int]:
+        """
+        Returns a column with a header and an underline.
+        Format: (name, lines, width)
+        """
+        width = max(len(line) for line in lines) + 5 if lines else 40
+        formatted = [name, "-" * width] + lines
+        return (name, formatted, width)
 
 def render_menu(spacing: int, name_of_section: str, menu_content: list):
         Log.add(f"menu {name_of_section} start generate", level="DEBUG")
@@ -26,77 +33,65 @@ def render_menu(spacing: int, name_of_section: str, menu_content: list):
                 "y_max": range_y,
                 "x_start": spacing,
                 "y_start": top_restriction,
-                "tile_step": 1,
         }
 
         Log.add(f"menu {name_of_section} has been generated successfully", level="DEBUG")
         forced_position_handler([spacing, top_restriction])
-def render_mine_grid():
+def render_mine_grid()-> list[list[str]]:
         Log.add(message="Mine Grid generation initialized", level="DEBUG")
 
-        # Get raw render grid from TileGrid
         raw_grid = Context.grid.render_grid()
-
         visual_grid = []
+
         for row in raw_grid:
                 visual_row = []
                 for tile in row:
-                        visual_row.append(Context.sprites.get(tile, "?"))  # Use sprite if available
-                visual_grid.append("".join(visual_row))  # Convert to string rows like render_menu
+                        visual_row.append(Context.sprites.get(tile, " ? "))
+                visual_grid.append(visual_row)
 
-        # Set as rendered area
-        visual_grid.insert(0, "MINE SWEEPER")
+        # Compute grid dimensions early to use them for padding
+        range_y = len(visual_grid)
+        range_x = len(visual_grid[0]) if range_y > 0 else 0
 
+        # Create and insert padded title row
+        title = "MINE SWEEPER"
+        padding = max(0, range_x * len(Context.sprites["0"]) - len(title))
+        visual_grid.insert(0, [title + " " * padding])
+
+        # Update the rendered area
         Context.rendered_area = visual_grid
 
-        # Use visual grid to determine bounds (like menu)
-        range_y = len(Context.rendered_area)
-        range_x = len(Context.rendered_area[0]) if range_y > 0 else 0
-        tile_step = max(len(value) for value in visual_grid)
+        # Position modifier (no need to recompute range_x/range_y again)
         Context.position_modifier = {
                 "x_min": 0,
-                "x_max": range_x,
+                "x_max": range_x - 1,
                 "y_min": 1,
-                "y_max": range_y,
+                "y_max": range_y+1,
                 "x_start": range_x // 2,
                 "y_start": range_y // 2,
-                "tile_step": tile_step,
-
         }
 
         forced_position_handler([range_x // 2, range_y // 2])
         Log.add(message="Mine Grid successfully generated", level="DEBUG")
 
-
-
-
-
 def render_user(render_object: list, sprite: str) -> list:
         Log.add("user has start generate", level="DEBUG")
-        tile_step = Context.position_modifier["tile_step"]
         position_2D = Context.position_2D
         line = list(render_object[position_2D[1]])
         line[position_2D[0]] = sprite
         render_object[position_2D[1]] = ''.join(line)
 
+        if render_object and isinstance(render_object[2], list):
+                render_object = ["".join(row) for row in render_object]
+        
         Log.add("user has been successfully generated", level="DEBUG")
         return render_object
 
-        Log.add("user has been successfully generated", level="DEBUG")
-        return render_object
 
 
 
 
 
-def build_column(name: str, lines: list[str]) -> tuple[str, list[str], int]:
-        """
-        Returns a column with a header and an underline.
-        Format: (name, lines, width)
-        """
-        width = max(len(line) for line in lines) + 5 if lines else 40
-        formatted = [name, "-" * width] + lines
-        return (name, formatted, width)
 
 
 def final_render(sprite: str):
@@ -108,12 +103,15 @@ def final_render(sprite: str):
         # === main display ===
         main_display = Context.rendered_area.copy()
         rendered_with_cursor = render_user(main_display, Context.sprites[sprite])
-
+        if rendered_with_cursor and isinstance(rendered_with_cursor[0], list):
+                rendered_with_cursor = ["".join(row) for row in rendered_with_cursor]
+        
         if rendered_with_cursor:
-                underline = "_" * len(rendered_with_cursor[0])
+                underline_length = max(len(line) for line in rendered_with_cursor)
+                underline = "-" * underline_length
                 rendered_with_cursor.insert(1, underline)
 
-        board_width = Context.position_modifier["x_max"] + 10
+        board_width = max(len(line) for line in rendered_with_cursor) 
         columns.append(("Board", rendered_with_cursor, board_width))
 
         # === if enabled info log ===
@@ -142,6 +140,7 @@ def final_render(sprite: str):
                 for _, lines, width in columns:
                         line = lines[i] if i < len(lines) else ""
                         line_parts.append(line.ljust(width))
+                
                 print(" | ".join(line_parts))
 
         Log.add("final render has been successful", level="DEBUG")

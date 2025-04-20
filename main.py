@@ -10,27 +10,27 @@ from modules.handlers import user_input_on_press,position_handler
 def init_mine_sweeper():
     width = Context.grid_width
     height = Context.grid_height
-    difficulty_factor = Context.difficulty_modifier or 1.0
+    difficulty_factor = Context.difficulty_modifier
 
     base_tiles = width * height
-    num_mines = max(1, int(base_tiles * 0.15 * difficulty_factor))
+    num_mines = max(1, int(base_tiles *  difficulty_factor))
 
-    Log.add(f"Initializing grid {width}x{height} with {num_mines} mines", level="INFO")
+    Log.add(f"Initializing grid {width}x{height} with {num_mines} mines", level="DEBUG")
 
-    # ✅ Create and assign the TileGrid to Context
+
     Context.grid = TileGrid(num_mines=num_mines, width=width, height=height)
-
-    # ✅ Now safe to call render_mine_grid
-    render_mine_grid()
+    Context.raw_grid = render_mine_grid()
 
     MetricData.append_metric_data("Selected difficulty", Context.difficulty)
     MetricData.append_metric_data("Grid size", f"{width}x{height}")
     MetricData.append_metric_data("Mine count", num_mines)
 
 # for start in menu and list in menu 
-# main_menu()
+
+main_menu()
 
 # for start in game and play game
+# 
 # init_mine_sweeper()
 # while True:
 #         final_render(sprite="grid cursor")

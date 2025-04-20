@@ -154,5 +154,30 @@ class TileGrid:
                 else:
                     visual_row.append("?")
             visual_grid.append(visual_row)
-        Context.raw_grid = visual_grid
+
+        return visual_grid
+
+    def render_cheat_grid(self) -> list[list[str]]:
+
+        visual_grid = []
+
+        for row in self.grid:
+            visual_row = []
+            for tile in row:
+                if isinstance(tile, EmptyTile):
+                    if not tile.revealed:
+                        visual_row.append("0")
+                    elif tile.adjacent_mines == 0:
+                        visual_row.append(".")
+                    else:
+                        visual_row.append(str(tile.adjacent_mines))
+                elif isinstance(tile, MineTile):
+                    if tile.revealed:
+                        visual_row.append("M")
+                    else:
+                        visual_row.append("0")
+                else:
+                    visual_row.append("?")
+            visual_grid.append(visual_row)
+
         return visual_grid
