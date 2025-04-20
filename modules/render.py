@@ -1,8 +1,9 @@
 from modules.handlers import forced_position_handler
-from GlobalData.GlobalContext import Context
-from GlobalData.Metric import MetricData, Log
-from core.GlobalHelpers import clear_console
+from global_data.global_context import Context
+from global_data.metric import MetricData, Log
+from core.global_helpers import clear_console
 import json
+
 
 def build_column(name: str, lines: list[str]) -> tuple[str, list[str], int]:
         """

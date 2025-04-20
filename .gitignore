@@ -1,2 +1,30 @@
-.idea/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
 .venv/
+env/
+venv/
+
+# Editor files
+.vscode/
+.idea/
+
+# Mac & Linux system files
+.DS_Store
+*.swp
+
+# Logs and caches
+*.log
+*.sqlite3
+*.db
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/

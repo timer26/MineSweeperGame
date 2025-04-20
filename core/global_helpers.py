@@ -1,6 +1,6 @@
 from typing import Literal, Union
-from GlobalData.GlobalContext import Context
-from GlobalData.Metric import MetricData, Log
+from global_data.global_context import Context
+from global_data.metric import MetricData, Log
 import os
 import sys
 

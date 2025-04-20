@@ -1,10 +1,12 @@
 
-from MinesGame import main_menu
-from GlobalData.GlobalContext import Context
-from GlobalData.Metric import MetricData, Log
-from MinesGame.MinesGame import TileGrid
+from mines_game import main_menu
+from core.global_helpers import user_input_on_press
+from modules.handlers import position_handler
+from global_data.global_context import Context
+from global_data.metric import MetricData, Log
+from mines_game.mines_game import TileGrid
 from modules.render import render_mine_grid, final_render
-from modules.handlers import user_input_on_press,position_handler
+
 
 
 def init_mine_sweeper():
@@ -27,13 +29,13 @@ def init_mine_sweeper():
 
 # for start in menu and list in menu 
 
-main_menu()
-
-# for start in game and play game
+# main_menu()
 # 
-# init_mine_sweeper()
-# while True:
-#         final_render(sprite="grid cursor")
-#         user_input_on_press()
-#         position_handler()
+# for start in game and play game
+
+init_mine_sweeper()
+while True:
+        final_render(sprite="grid cursor")
+        user_input_on_press()
+        position_handler()
 

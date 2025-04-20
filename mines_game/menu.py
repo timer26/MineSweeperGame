@@ -1,7 +1,8 @@
 import time
-from modules import render_menu, menu_handler,final_render,get_data_snapshot
-from GlobalData.GlobalContext import Context
-from GlobalData.Metric import Log
+from modules.render import render_menu, final_render, get_data_snapshot
+from modules.handlers import menu_handler
+from global_data.global_context import Context
+from global_data.metric import Log
 
 
 

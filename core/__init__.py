@@ -1,4 +1,4 @@
-from .GlobalHelpers import (user_input_on_press,
+from .global_helpers import (user_input_on_press,
                             back,
                             push_menu_position,
                             difficulty_setter,

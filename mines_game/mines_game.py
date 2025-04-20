@@ -1,6 +1,6 @@
 import random
 from abc import ABC, abstractmethod
-from GlobalData.GlobalContext import Context
+from global_data.global_context import Context
 
 
 
@@ -86,7 +86,7 @@ class MineTile(Tile):
 
     def on_click(self, tile_grid):
         self.revealed = True
-        print(f"💥 BOOM! Mine at ({self.x}, {self.y})")
+        print(f"BOOM! Mine at ({self.x}, {self.y})")
 
 
 class TileGrid:

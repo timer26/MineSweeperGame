@@ -1,4 +1,4 @@
-from GlobalData.GlobalContext import Context
+from global_data.global_context import Context
 from dataclasses import dataclass
 from typing import Literal
 @dataclass

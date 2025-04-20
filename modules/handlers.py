@@ -1,11 +1,15 @@
-from GlobalData.GlobalContext import Context
-from GlobalData.Metric import MetricData, Log
+from global_data.global_context import Context
+from global_data.metric import MetricData, Log
+
 from modules import *
-from core.GlobalHelpers import (user_input_on_press, 
-                                difficulty_setter,back,
-                                push_menu_position,
-                                grid_setter
-                                )
+
+from core.global_helpers import (
+    user_input_on_press,
+    difficulty_setter,
+    back,
+    push_menu_position,
+    grid_setter,
+)
 
     
 
