@@ -1,19 +1,29 @@
 import time
-
-from modules import render_menu, menu_handler,final_render
+from modules import render_menu, menu_handler,final_render,get_data_snapshot
 from GlobalData.GlobalContext import Context
+from GlobalData.Metric import Log
 
 
 
 
 def run_menu(menu_content: list, spacing: int, name_of_section: str):
     render_menu(spacing, name_of_section, menu_content)
+    Context.context_trigger +=1
+    last_snapshot = get_data_snapshot()
+
     while True:
-        final_render("menu_cursor")
+        current_snapshot = get_data_snapshot()
+
+        if current_snapshot != last_snapshot:
+            final_render("menu_cursor")
+            last_snapshot = current_snapshot
+
         menu_handler(menu_content)
 
 # menu functions----------------------------------------------------
-
+def spacing_definition(content: list)->int:
+    return len(max(content, key=len)) + 3
+    
 
 # menu pathing -----------------------------------------------------
 def start_game():
@@ -25,8 +35,9 @@ def start_game():
 
     ]
 
-    spacing = 15
+    spacing = spacing_definition(menu_content)
     name_of_section = "start_game"
+    Log.add(f"switched to menu ={name_of_section}", level="DEBUG")
     run_menu(menu_content, spacing, name_of_section)
 
 def difficulty():
@@ -37,25 +48,46 @@ def difficulty():
             "back",
     ]
 
-    spacing = 15
+    spacing = spacing_definition(menu_content)
     name_of_section = "difficulty"
+    Log.add(f"switched to menu ={name_of_section}", level="DEBUG")
+    run_menu(menu_content, spacing, name_of_section)
+def grid_settings():
+    menu_content = [
+            "5x5",
+            "10x10",
+            "20x20",
+            "custom",
+            "back",
+
+    ]
+
+    spacing = spacing_definition(menu_content)
+    name_of_section = "settings"
+    Log.add(f"switched to menu ={name_of_section}", level="DEBUG")
     run_menu(menu_content, spacing, name_of_section)
     
 def settings():
     menu_content = [
-            "metrics_analyze",
             "difficulty",
-             "back",   
+            "grid_settings",
+            "log_settings"
+            "back",
+              
     ]
 
-    spacing = 15
+    spacing = spacing_definition(menu_content)
     name_of_section = "settings"
+    Log.add(f"switched to menu ={name_of_section}", level="DEBUG")
     run_menu(menu_content, spacing, name_of_section)
+    
+    
 def end_game():
     menu_content =["Thanks for playing!"]
-    spacing = 15
+    spacing = spacing_definition(menu_content)
     name_of_section = "end_game"
     render_menu(spacing, name_of_section, menu_content)
+    Log.add(f"switched to menu ={name_of_section}", level="DEBUG")
     time.sleep(3)
     exit()
 
@@ -72,6 +104,7 @@ def main_menu():
 
     spacing = 15
     name_of_section = "MAIN MENU"
+    Log.add(f"switched to menu ={name_of_section}", level="DEBUG")
     run_menu(menu_content, spacing, name_of_section)
 
 
@@ -80,6 +113,8 @@ Context.all_menu_functions = {
         "start_game": start_game,
         "difficulty": difficulty,
         "settings": settings,
+        "grid_settings": grid_settings,
         "end_game": end_game,
         # "metrics_analyze"metrics_analyze,
+        # "log_settings",
 }
