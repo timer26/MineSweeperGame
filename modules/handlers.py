@@ -3,7 +3,8 @@ from GlobalData.Metric import MetricData, Log
 from modules import *
 from core.GlobalHelpers import (user_input_on_press, 
                                 difficulty_setter,back,
-                                push_menu_position
+                                push_menu_position,
+                                grid_setter
                                 )
 
     
@@ -46,8 +47,8 @@ def menu_handler(menu_content: list):
             difficulty_setter(selected_key)
         elif selected_key == "back":
             back()
-        # elif Context.menu_position == "5x5" or "10x10" or "20x20" or "custom":
-        #     grid_setter(selected_key)
+        elif Context.menu_position == "5x5" or "10x10" or "20x20" or "custom":
+            grid_setter(selected_key)
         else:
             push_menu_position(Context.menu_position)
 

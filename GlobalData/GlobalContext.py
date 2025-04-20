@@ -10,16 +10,30 @@ class _Context:
     context_trigger: int = 1
     
     difficulty: str = "easy"
-    difficulty_modifier: float = None
+    difficulty_modifier: float = 1.0
     menu_position: str = "main_menu"
     last_menu_position_stack: list = field(default_factory=lambda: ["main_menu"])
     sprites: dict = field(default_factory=lambda: {
-            "menu_cursor": "<--",
-            "mine": "@"
+            "menu cursor":     "<---",
+            "grid cursor":     "[X]",
+            "M":               " # ",
+            "flag":            " P ",
+            "R":               " · ",
+            "0":               " ■ ",
+            "1":               " 1 ",
+            "2":               " 2 ",
+            "3":               " 3 ",
+            "4":               " 4 ",
+            "5":               " 5 ",
+            "6":               " 6 ",
+            "7":               " 7 ",
+            "8":               " 8 ",
+            "9":               " 9 ",
     })
     
     grid_width = 5
     grid_height = 5
+    raw_grid = None
     
     #metric enable/disable
     metric_state = True

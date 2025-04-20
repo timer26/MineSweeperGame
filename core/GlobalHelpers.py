@@ -44,14 +44,30 @@ def user_input_record(mode: Literal["str", "int", "float"]) -> Union[str, int, f
     return result
 
 
+
 def user_input_on_press() -> str or None:
     Log.add(message="user input on press has started", level="DEBUG")
 
     def get_single_keypress():
         if os.name == 'nt':
             import msvcrt
-            key = msvcrt.getch()
-            return key.decode().lower()
+            first = msvcrt.getch()
+            # Extended/special keys (e.g., arrows, F1–F12)
+            if first in {b'\x00', b'\xe0'}:
+                second = msvcrt.getch()
+                key_map = {
+                        b'H': "up",
+                        b'P': "down",
+                        b'K': "left",
+                        b'M': "right",
+                }
+                return key_map.get(second, "unknown")
+            else:
+                try:
+                    return first.decode().lower()
+                except UnicodeDecodeError:
+                    Log.add(message="UnicodeDecodeError", level="ERROR")
+                    return "unknown"
         else:
             import tty
             import termios
@@ -60,29 +76,27 @@ def user_input_on_press() -> str or None:
             try:
                 tty.setraw(fd)
                 key = sys.stdin.read(1)
+                if key == '\x1b':  # possible escape sequence
+                    seq = sys.stdin.read(2)
+                    arrows = {"[A": "up", "[B": "down", "[C": "right", "[D": "left"}
+                    return arrows.get(seq, "unknown")
+                return key.lower()
             finally:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-            return key.lower()
 
     key = get_single_keypress()
 
     key_map = {
+            "esc": "esc",
             "\x1b": "esc",
             "\r": "enter",
+            "\n": "enter",
             "\x7f": "backspace",
+            "\b": "backspace",
             "w": "w", "a": "a", "s": "s", "d": "d",
     }
 
-    # Optional: arrow key handling (platform-specific escape sequences)
-    if key == "\x1b":  # escape sequence start
-        next1 = get_single_keypress()
-        if next1 == "[":
-            next2 = get_single_keypress()
-            arrows = {"A": "up", "B": "down", "C": "right", "D": "left"}
-            key = arrows.get(next2, "unknown")
-
-    else:
-        key = key_map.get(key, key)
+    key = key_map.get(key, key)
 
     MetricData.append_metric_data("Last key pressed", key)
     Context.metric_data = {"Latest key pressed": key}
@@ -109,6 +123,7 @@ def user_input_on_press() -> str or None:
     else:
         Log.add(message=f"Unrecognized key: {key}", level="ERROR")
         return None
+
 
     
 def back():

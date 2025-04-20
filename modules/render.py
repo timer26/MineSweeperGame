@@ -2,6 +2,7 @@ from modules.handlers import forced_position_handler
 from GlobalData.GlobalContext import Context
 from GlobalData.Metric import MetricData, Log
 from core.GlobalHelpers import clear_console
+from MinesGame.MinesGame import TileGrid
 import json
 
 
@@ -25,15 +26,54 @@ def render_menu(spacing: int, name_of_section: str, menu_content: list):
                 "y_max": range_y,
                 "x_start": spacing,
                 "y_start": top_restriction,
+                "tile_step": 1,
         }
 
         Log.add(f"menu {name_of_section} has been generated successfully", level="DEBUG")
         forced_position_handler([spacing, top_restriction])
+def render_mine_grid():
+        Log.add(message="Mine Grid generation initialized", level="DEBUG")
+
+        # Get raw render grid from TileGrid
+        raw_grid = Context.grid.render_grid()
+
+        visual_grid = []
+        for row in raw_grid:
+                visual_row = []
+                for tile in row:
+                        visual_row.append(Context.sprites.get(tile, "?"))  # Use sprite if available
+                visual_grid.append("".join(visual_row))  # Convert to string rows like render_menu
+
+        # Set as rendered area
+        visual_grid.insert(0, "MINE SWEEPER")
+
+        Context.rendered_area = visual_grid
+
+        # Use visual grid to determine bounds (like menu)
+        range_y = len(Context.rendered_area)
+        range_x = len(Context.rendered_area[0]) if range_y > 0 else 0
+        tile_step = max(len(value) for value in visual_grid)
+        Context.position_modifier = {
+                "x_min": 0,
+                "x_max": range_x,
+                "y_min": 1,
+                "y_max": range_y,
+                "x_start": range_x // 2,
+                "y_start": range_y // 2,
+                "tile_step": tile_step,
+
+        }
+
+        forced_position_handler([range_x // 2, range_y // 2])
+        Log.add(message="Mine Grid successfully generated", level="DEBUG")
+
+
+
 
 
 def render_user(render_object: list, sprite: str) -> list:
         Log.add("user has start generate", level="DEBUG")
-
+        tile_step = Context.position_modifier["tile_step"]
         position_2D = Context.position_2D
         line = list(render_object[position_2D[1]])
         line[position_2D[0]] = sprite
@@ -41,6 +81,12 @@ def render_user(render_object: list, sprite: str) -> list:
 
         Log.add("user has been successfully generated", level="DEBUG")
         return render_object
+
+        Log.add("user has been successfully generated", level="DEBUG")
+        return render_object
+
+
+
 
 
 def build_column(name: str, lines: list[str]) -> tuple[str, list[str], int]:
