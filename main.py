@@ -29,13 +29,12 @@ def init_mine_sweeper():
 
 # for start in menu and list in menu 
 
-# main_menu()
-# 
+main_menu()
+
 # for start in game and play game
 
-init_mine_sweeper()
-while True:
-        final_render(sprite="grid cursor")
-        user_input_on_press()
-        position_handler()
-
+# init_mine_sweeper()
+# while True:
+#     final_render(sprite="grid cursor")
+#     user_input_on_press()
+#     position_handler()

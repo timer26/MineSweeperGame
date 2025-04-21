@@ -35,32 +35,30 @@ def forced_position_handler(forced_position: list) -> list:
     return Context.position_2D
 
 
-def menu_handler(menu_content: list):
-    Log.add(message="Menu handler triggerd", level="DEBUG")
-    
+def menu_handler(menu_content: dict) -> str | None:
+    Log.add(message="Menu handler triggered", level="DEBUG")
+
+    menu_keys = list(menu_content.keys())
     selected_option = Context.position_2D[1] - Context.position_modifier["y_start"]
-    selected_key = menu_content[selected_option]
-    
+
+    if selected_option < 0 or selected_option >= len(menu_keys):
+        Log.add(message="Invalid menu index", level="ERROR")
+        return None
+
+    selected_key = menu_keys[selected_option]
     MetricData.append_metric_data("Selected menu option", selected_key)
-    
+
     result = user_input_on_press()
     position_handler()
-    
-    if result == "enter":
-        if Context.menu_position == "difficulty":
-            difficulty_setter(selected_key)
-        elif selected_key == "back":
-            back()
-        elif Context.menu_position == "5x5" or "10x10" or "20x20" or "custom":
-            grid_setter(selected_key)
-        else:
-            push_menu_position(Context.menu_position)
 
-            Context.menu_position = selected_key
-            Context.all_menu_functions[selected_key]()
+    if result == "enter":
+        Log.add(message=f"menu handler ended with '{selected_key}' selected", level="DEBUG")
+        return selected_key
+
     elif result == "esc":
-        Context.menu_position = "main_menu"
-        Context.all_menu_functions["main_menu"]()
+        return "main_menu"
+
     elif result == "backspace":
-        back()
-    Log.add(message=f"menu handler ended whit {selected_key} selected",level= "DEBUG" )
+        return "back"
+
+    return None
