@@ -43,7 +43,10 @@ def run_game():
             GridInterface.flag()
 
     while True:
+
         render_mine_grid()
         final_render(sprite="grid cursor")
+        print(f"mines {Context.mine_tiles}")
+        print(f"tiles {Context.empty_tiles}")
         user_input_game_handler()
         position_handler()

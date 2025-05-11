@@ -1,1 +1,1 @@
-from .menu import (    main_menu,    settings,    end_game,    difficulty                ) __all__ =            [        "main_menu",        "settings",        "settings",        "difficulty"                    ]
+from mines_game.menu import (    main_menu,    settings,    end_game,    difficulty                ) __all__ =            [        "main_menu",        "settings",        "settings",        "difficulty"                    ]
