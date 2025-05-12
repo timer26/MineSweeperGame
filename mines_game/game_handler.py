@@ -5,7 +5,7 @@ from global_data.global_context import Context
 from global_data.metric import MetricData, Log
 from mines_game.mines_game import TileGrid, GridInterface
 from modules.render import render_mine_grid, final_render, forced_position_handler
-
+from core.timer_API import total_time
 
 
 
@@ -25,28 +25,37 @@ def init_mine_sweeper():
 
     MetricData.append_metric_data("Selected difficulty", Context.difficulty)
     MetricData.append_metric_data("Grid size", f"{width}x{height}")
-    MetricData.append_metric_data("Mine count", num_mines)
-
-
-
+    MetricData.append_metric_data("Total mines", num_mines)
 
 
 
 def run_game():
     init_mine_sweeper()
     forced_position_handler([Context.grid_height // 2, Context.grid_width // 2])
+    total_mine_count = len(Context.mine_tiles)
     def user_input_game_handler():
         result = user_input_on_press()
         if result == "enter":
-            GridInterface.click()
+            if GridInterface.click():
+                from mines_game.menu import win
+                win(case=False, mines_count=total_mine_count)
         elif result == "space":
             GridInterface.flag()
+        elif result == "esc":
+            from mines_game.menu import main_menu
+            main_menu()
 
+    total_time()
     while True:
-
+        MetricData.append_metric_data("Mines left", f"{len(Context.mine_tiles)}")
         render_mine_grid()
         final_render(sprite="grid cursor")
-        print(f"mines {Context.mine_tiles}")
-        print(f"tiles {Context.empty_tiles}")
+        # print(Context.raw_grid)
+        # print(len(Context.mine_tiles))
+        # print(f"mines {Context.mine_tiles}")
+        # print(f"tiles {Context.empty_tiles}")
         user_input_game_handler()
         position_handler()
+        if len(Context.mine_tiles) == 0 or len(Context.empty_tiles) == 0:
+            from mines_game.menu import win
+            return win(case=True,mines_count=total_mine_count)

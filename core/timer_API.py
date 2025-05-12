@@ -33,14 +33,17 @@ def get_time_context() -> datetime:
         return datetime.now()
 
 
-def total_time()->str|None:
-    if not hasattr(Context, "base_time") or Context.base_time is None:
+def total_time() -> str | None:
+    if not isinstance(Context.base_time, datetime):
         Log.add(message="base time get initialized", level="DEBUG")
         Context.base_time = get_time_context()
 
     else:
         Log.add(message="end time get initialized", level="DEBUG")
         end_time = get_time_context()
+        if not isinstance(end_time, datetime):
+            Log.add(message="Invalid end_time", level="ERROR")
+            return None
         delta: timedelta = end_time - Context.base_time
         Context.base_time = None
         return str(delta)
