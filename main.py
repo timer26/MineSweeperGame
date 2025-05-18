@@ -1,1 +1,1 @@
-from mines_game import main_menumain_menu()
+from mines_game import main_menufrom core import hide_cursorhide_cursor()main_menu()

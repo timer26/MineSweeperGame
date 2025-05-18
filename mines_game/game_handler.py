@@ -48,6 +48,7 @@ def run_game():
     total_time()
     while True:
         MetricData.append_metric_data("Mines left", f"{len(Context.mine_tiles)}")
+        MetricData.append_metric_data("Empty tiles left", f"{len(Context.empty_tiles)}")
         render_mine_grid()
         final_render(sprite="grid cursor")
         # print(Context.raw_grid)
